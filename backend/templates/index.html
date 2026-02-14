@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Zamstay - Zambia's #1 Booking Platform</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+        .logo {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .tagline {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        .status {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .feature {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        .feature:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.1);
+        }
+        .links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .link {
+            background: rgba(255,255,255,0.15);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .link:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: white;
+            transform: translateY(-2px);
+        }
+        .api-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+        .connected { background: rgba(76, 222, 128, 0.2); }
+        .disconnected { background: rgba(248, 113, 113, 0.2); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏆 ZAMSTAY</div>
+        <div class="tagline">Zambia's Premier Booking Platform</div>
+        
+        <div class="status">
+            <h2>Booking.com Level Platform</h2>
+            <p>Everything runs on port 8000</p>
+            <p>API Status: <span id="apiStatus" class="api-status disconnected">Checking...</span></p>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>🏨 Properties</h3>
+                <p>Manage thousands of listings</p>
+            </div>
+            <div class="feature">
+                <h3>🔐 Security</h3>
+                <p>JWT Authentication</p>
+            </div>
+            <div class="feature">
+                <h3>💰 Payments</h3>
+                <p>Secure payment processing</p>
+            </div>
+            <div class="feature">
+                <h3>⭐ Reviews</h3>
+                <p>Guest feedback system</p>
+            </div>
+        </div>
+        
+        <div class="links">
+            <a href="/admin" class="link" target="_blank">Admin Panel</a>
+            <a href="/api/properties" class="link" target="_blank">Properties API</a>
+            <a href="/api/docs" class="link" target="_blank">API Documentation</a>
+            <a href="https://github.com" class="link" target="_blank">GitHub</a>
+        </div>
+        
+        <div style="margin-top: 3rem; opacity: 0.8;">
+            <p>🇿🇲 Proudly Zambian | 🏆 Booking.com Level | 🚀 Single Port: 8000</p>
+        </div>
+    </div>
+
+    <!-- React will mount here -->
+    <div id="root"></div>
+    
+    <script>
+        // Check API connection
+        fetch('/api/properties/')
+            .then(response => {
+                const status = document.getElementById('apiStatus');
+                if (response.ok) {
+                    status.textContent = '✅ Connected';
+                    status.className = 'api-status connected';
+                } else {
+                    status.textContent = '⚠️ Partial';
+                    status.className = 'api-status disconnected';
+                }
+            })
+            .catch(() => {
+                const status = document.getElementById('apiStatus');
+                status.textContent = '❌ Disconnected';
+                status.className = 'api-status disconnected';
+            });
+            
+        // Simulate React loading
+        setTimeout(() => {
+            const root = document.getElementById('root');
+            if (!root.hasChildNodes()) {
+                console.log('React app would load here...');
+                // In production, React would render here
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

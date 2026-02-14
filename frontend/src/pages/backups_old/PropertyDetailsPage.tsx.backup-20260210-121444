@@ -1,0 +1,134 @@
+import React, { useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { MapPin, Star, ChevronLeft, Share2, Heart, Zap, Droplets, MessageCircle } from 'lucide-react';
+
+const PropertyDetailsPage: React.FC = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+
+  const property = {
+    name: "Zambezi River Lodge",
+    location: "Livingstone, Zambia",
+    rating: 4.9,
+    reviews: 128,
+    images: [
+      "https://images.unsplash.com/photo-1549180030-48bf079fb38a",
+      "https://images.unsplash.com/photo-1516422213488-97f794bb0e02",
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d",
+      "https://images.unsplash.com/photo-1584132967334-10e028bd69f7"
+    ],
+    rooms: [
+      { id: '1', name: 'Executive River Suite', price: 2450, guests: 2, bed: 'King Bed' },
+      { id: '2', name: 'Standard Garden Room', price: 1850, guests: 2, bed: 'Queen Bed' },
+      { id: '3', name: 'Family Safari Tent', price: 3200, guests: 4, bed: '4 Beds' },
+    ]
+  };
+
+  const handleReserve = () => {
+    if (selectedRoom) {
+      // Find the room details to pass to checkout
+      const room = property.rooms.find(r => r.id === selectedRoom);
+      navigate(`/checkout/${id}`, { state: { propertyName: property.name, roomName: room?.name, price: room?.price } });
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-white text-gray-900 pb-20">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center border-b border-gray-100 mb-6">
+        <Link to="/" className="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition font-bold">
+          <ChevronLeft size={20} />
+          <span>Back to Explore</span>
+        </Link>
+        <div className="flex gap-4">
+          <button className="p-2 hover:bg-gray-100 rounded-full transition text-gray-600"><Share2 size={18} /></button>
+          <button className="p-2 hover:bg-gray-100 rounded-full transition text-gray-600"><Heart size={18} /></button>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="mb-8">
+          <h1 className="text-4xl font-extrabold text-blue-900 mb-2">{property.name}</h1>
+          <div className="flex items-center gap-4 text-sm font-semibold">
+            <span className="flex items-center gap-1 text-yellow-500"><Star size={16} fill="currentColor" /> {property.rating} ({property.reviews} reviews)</span>
+            <span className="flex items-center gap-1 text-gray-400 font-medium"><MapPin size={16} /> {property.location}</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 h-[450px] mb-12 rounded-3xl overflow-hidden shadow-sm border border-gray-100">
+          <div className="md:col-span-2 h-full">
+            <img src={property.images[0]} className="w-full h-full object-cover" alt="Main" />
+          </div>
+          <div className="grid grid-cols-2 grid-rows-2 md:col-span-2 gap-3 h-full">
+            {property.images.slice(1, 5).map((img, i) => (
+              <img key={i} src={img} className="w-full h-full object-cover" alt={`Sub ${i}`} />
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="lg:col-span-2">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Select Your Room</h2>
+            <div className="space-y-4 mb-10">
+              {property.rooms.map((room) => (
+                <div 
+                  key={room.id}
+                  onClick={() => setSelectedRoom(room.id)}
+                  className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex justify-between items-center ${
+                    selectedRoom === room.id ? 'border-blue-600 bg-blue-50' : 'border-gray-100 hover:border-blue-200'
+                  }`}
+                >
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">{room.name}</h3>
+                    <p className="text-gray-500 text-sm mt-1">{room.guests} Guests • {room.bed}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-bold text-blue-900">K{room.price}</p>
+                    <p className="text-xs text-gray-400">per night</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-4">
+               <div className="bg-gray-50 p-5 rounded-2xl w-32 text-center border border-gray-100">
+                  <Zap className="mx-auto text-yellow-500 mb-2" />
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Power</p>
+                  <p className="font-bold text-gray-900">Solar</p>
+               </div>
+               <div className="bg-gray-50 p-5 rounded-2xl w-32 text-center border border-gray-100">
+                  <Droplets className="mx-auto text-blue-500 mb-2" />
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Water</p>
+                  <p className="font-bold text-gray-900">Borehole</p>
+               </div>
+            </div>
+          </div>
+
+          <div className="sticky top-10 h-fit bg-white border border-gray-200 rounded-3xl p-8 shadow-xl shadow-blue-900/5">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">Reservation Summary</h3>
+            <div className={`p-4 rounded-xl text-sm mb-6 font-medium ${selectedRoom ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
+              {selectedRoom ? "Selected room is available!" : "Please select a room type to continue."}
+            </div>
+            
+            <button 
+              onClick={handleReserve}
+              disabled={!selectedRoom}
+              className={`w-full py-4 rounded-xl font-bold text-lg transition-all mb-4 shadow-md ${
+                selectedRoom ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              Reserve Now
+            </button>
+            
+            <button className="w-full py-4 rounded-xl border border-blue-600 text-blue-600 font-bold flex items-center justify-center gap-2 hover:bg-blue-50 transition">
+              <MessageCircle size={20} /> Chat with Host
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PropertyDetailsPage;

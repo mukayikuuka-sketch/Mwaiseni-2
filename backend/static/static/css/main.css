@@ -1,0 +1,22 @@
+﻿/* Main styles for Zamstay */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Add animation for loading */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+    animation: fadeIn 1s ease-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .logo { font-size: 2.5rem !important; }
+    .tagline { font-size: 1.2rem !important; }
+    .features { grid-template-columns: 1fr; }
+    .link { width: 100%; text-align: center; }
+}

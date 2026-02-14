@@ -1,0 +1,68 @@
+import React, { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from "../context/AuthContext";
+
+const RegisterPage: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+  
+  // Detect if they came from the Partner Landing Page
+  const isPartnerSignup = location.pathname.includes('partner');
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: isPartnerSignup ? 'partner' : 'guest'
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simulate registration and auto-login
+    login(formData.email, formData.role as 'guest' | 'partner');
+    
+    // Redirect based on role
+    if (formData.role === 'partner') {
+      navigate('/owner/dashboard');
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl">
+        <h2 className="text-center text-3xl font-extrabold text-gray-900">
+          {isPartnerSignup ? 'List your Property on Mwaiseni' : 'Create your Guest Account'}
+        </h2>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <input 
+            type="text" required placeholder="Full Name"
+            className="w-full px-4 py-3 border rounded-lg"
+            onChange={(e) => setFormData({...formData, name: e.target.value})}
+          />
+          <input 
+            type="email" required placeholder="Email Address"
+            className="w-full px-4 py-3 border rounded-lg"
+            onChange={(e) => setFormData({...formData, email: e.target.value})}
+          />
+          <input 
+            type="password" required placeholder="Password"
+            className="w-full px-4 py-3 border rounded-lg"
+            onChange={(e) => setFormData({...formData, password: e.target.value})}
+          />
+          <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700">
+            {isPartnerSignup ? 'Register as Partner' : 'Sign Up'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterPage;
+
+
+
+

@@ -1,0 +1,247 @@
+﻿// src/pages/LoginPage.tsx - UPDATED with redirect logic
+import React, { useState } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { LogIn, Mail, Lock, Eye, EyeOff, Building2, Home } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+
+const LoginPage: React.FC = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showTestOptions, setShowTestOptions] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+
+  // Get redirect path from URL or default to homepage
+  const from = (location.state as any)?.from?.pathname || "/";
+
+  // Test users
+  const testUsers = {
+    guest: { email: "guest@zamstay.com", password: "guest123", role: "guest", name: "Test Guest" },
+    partner: { email: "partner@zamstay.com", password: "partner123", role: "partner", name: "Test Partner" }
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    // Check for test users
+    let userToLogin = null;
+    for (const key in testUsers) {
+      const user = testUsers[key as keyof typeof testUsers];
+      if (user.email === email && user.password === password) {
+        userToLogin = user;
+        break;
+      }
+    }
+
+    if (userToLogin) {
+      const mockToken = `mock_jwt_${Date.now()}_${userToLogin.role}`;
+      
+      // Login with redirect to original page (or homepage)
+      login({
+        id: 1,
+        email: userToLogin.email,
+        name: userToLogin.name,
+        role: userToLogin.role as "guest" | "partner" | "admin"
+      }, mockToken, from);
+      return;
+    }
+
+    // Try real API
+    try {
+      const response = await fetch("http://localhost:8000/api/token/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) throw new Error("Login failed");
+
+      const data = await response.json();
+      const userData = data.user || { 
+        email, 
+        name: email.split("@")[0], 
+        role: "guest" 
+      };
+
+      login(userData, data.access, from);
+
+    } catch (err: any) {
+      setError("Invalid email or password. Use test accounts: guest@zamstay.com / guest123");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Quick login for testing
+  const quickLogin = (userEmail: string, userPassword: string, userRole: "guest" | "partner") => {
+    setEmail(userEmail);
+    setPassword(userPassword);
+    setTimeout(() => {
+      const mockToken = `mock_jwt_${Date.now()}_${userRole}`;
+      const userData = {
+        id: userRole === "guest" ? 1 : 2,
+        email: userEmail,
+        name: userRole === "guest" ? "Test Guest" : "Test Partner",
+        role: userRole
+      };
+      login(userData, mockToken, from);
+    }, 100);
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50 py-12 px-4">
+      <div className="max-w-md w-full">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-600 to-green-500 rounded-xl flex items-center justify-center">
+            <LogIn className="h-8 w-8 text-white" />
+          </div>
+          <h1 className="mt-6 text-3xl font-bold text-gray-900">Welcome back</h1>
+          <p className="mt-2 text-gray-600">Sign in to manage your bookings and profile</p>
+        </div>
+
+        {/* Quick Test Buttons (hidden by default) */}
+        <div className="mb-6 bg-blue-50 rounded-xl p-4 border border-blue-200">
+          <p className="font-bold text-blue-800 mb-3 text-sm">Quick test:</p>
+          <div className="grid grid-cols-1 gap-2">
+            <button
+              onClick={() => quickLogin("guest@zamstay.com", "guest123", "guest")}
+              className="bg-green-100 text-green-800 py-2 px-4 rounded-lg text-sm hover:bg-green-200 transition flex items-center justify-center"
+            >
+              <Home size={16} className="mr-2" />
+              Login as Guest (goes to homepage)
+            </button>
+            <button
+              onClick={() => quickLogin("partner@zamstay.com", "partner123", "partner")}
+              className="bg-blue-100 text-blue-800 py-2 px-4 rounded-lg text-sm hover:bg-blue-200 transition flex items-center justify-center"
+            >
+              <Building2 size={16} className="mr-2" />
+              Login as Partner (goes to dashboard)
+            </button>
+          </div>
+          <p className="text-xs text-blue-600 mt-2">
+            After login, guest returns to homepage, partner goes to dashboard
+          </p>
+        </div>
+
+        {/* Login Form */}
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          {error && (
+            <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10 pr-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label className="ml-2 text-sm text-gray-600">Remember me</label>
+              </div>
+              <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-500">
+                Forgot password?
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-blue-600 to-green-500 text-white py-3 rounded-lg font-bold hover:opacity-90 disabled:opacity-50 transition"
+            >
+              {loading ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
+
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">Or continue with</p>
+              <div className="grid grid-cols-2 gap-3">
+                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                  Google
+                </button>
+                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                  Apple
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-8 text-center">
+              <p className="text-gray-600">
+                Don't have an account?{" "}
+                <Link to="/register" className="font-bold text-blue-600 hover:text-blue-500">
+                  Sign up
+                </Link>
+              </p>
+            </div>
+
+            {/* Partner link */}
+            <div className="mt-6 pt-6 border-t border-gray-200 text-center">
+              <p className="text-gray-600 mb-2">Are you a property owner?</p>
+              <Link 
+                to="/partner" 
+                className="inline-flex items-center text-blue-600 hover:text-blue-500 font-medium"
+              >
+                <Building2 size={18} className="mr-2" />
+                Partner with ZamStay
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LoginPage;
+
+

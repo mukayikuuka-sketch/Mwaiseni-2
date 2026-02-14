@@ -1,0 +1,71 @@
+﻿import { Routes, Route, Navigate } from 'react-router-dom'
+import MainLayout from './layouts/MainLayout'
+
+// --- GUEST PAGES ---
+import HomePage from './pages/HomePage'
+import SearchResultsPage from './pages/SearchResultsPage'
+import PropertyDetailsPage from './pages/PropertyDetailsPage'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+import SavedPage from './pages/SavedPage'
+import CheckoutPage from './pages/CheckoutPage'
+import MyTripsPage from './pages/MyTripsPage'
+import BookingConfirmationPage from './pages/BookingConfirmationPage'
+
+// --- PARTNER PAGES ---
+import PartnerStart from './pages/partner/PartnerStart'
+import PartnerDashboard from './pages/partner/PartnerDashboard'
+import PartnerLoginPage from './pages/PartnerLoginPage'
+import PartnerSignupPage from './pages/PartnerSignupPage'
+import PartnerListingsPage from './pages/PartnerListingsPage'
+import PartnerBookingsPage from './pages/PartnerBookingsPage'
+import AddPropertyPage from './pages/AddPropertyPage'
+
+import { useAuth } from './context/AuthContext'
+
+export default function App() {
+  const { user } = useAuth()
+
+  return (
+    <MainLayout>
+      <Routes>
+        {/* Public & Guest */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/search" element={<SearchResultsPage />} />
+        <Route path="/property/:id" element={<PropertyDetailsPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/saved" element={<SavedPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/trips" element={<MyTripsPage />} />
+        <Route path="/confirmation" element={<BookingConfirmationPage />} />
+
+        {/* Partner Entry */}
+        <Route path="/list-property" element={<PartnerStart />} />
+        <Route path="/partner/login" element={<PartnerLoginPage />} />
+        <Route path="/partner/signup" element={<PartnerSignupPage />} />
+        
+        {/* Protected Partner Routes */}
+        <Route 
+          path="/partner/dashboard" 
+          element={user?.role === 'partner' ? <PartnerDashboard /> : <Navigate to="/partner/login" />} 
+        />
+        <Route 
+          path="/partner/listings" 
+          element={user?.role === 'partner' ? <PartnerListingsPage /> : <Navigate to="/partner/login" />} 
+        />
+        <Route 
+          path="/partner/add-property" 
+          element={user?.role === 'partner' ? <AddPropertyPage /> : <Navigate to="/partner/login" />} 
+        />
+        <Route 
+          path="/partner/bookings" 
+          element={user?.role === 'partner' ? <PartnerBookingsPage /> : <Navigate to="/partner/login" />} 
+        />
+
+        {/* Catch-all redirection */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </MainLayout>
+  )
+}

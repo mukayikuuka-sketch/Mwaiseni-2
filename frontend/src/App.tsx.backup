@@ -1,0 +1,99 @@
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
+// LAYOUTS
+import PublicLayout from './layouts/PublicLayout';
+import OwnerLayout from './layouts/OwnerLayout';
+
+// --- GUEST & CORE PAGES (src/pages/) ---
+import HomePage from './pages/HomePage';
+import SearchResultsPage from './pages/SearchResultsPage';
+import PropertyDetailsPage from './pages/PropertyDetailsPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import CheckoutPage from './pages/CheckoutPage';
+import BookingConfirmationPage from './pages/BookingConfirmationPage';
+import MyTripsPage from './pages/MyTripsPage';
+import SavedPage from './pages/SavedPage';
+import ProfilePage from './pages/ProfilePage';
+import NotFoundPage from './pages/NotFoundPage';
+import AddPropertyPage from './pages/AddPropertyPage';
+
+// --- PARTNER & OWNER PAGES (src/pages/partner/ & src/pages/owner/) ---
+import PartnerStart from './pages/partner/PartnerStart';
+import PartnerDashboard from './pages/partner/PartnerDashboard';
+import PartnerInventoryHub from './pages/partner/PartnerInventoryHub';
+import PartnerEarningsPage from './pages/partner/PartnerEarningsPage';
+import PartnerLoginPage from './pages/partner/PartnerLoginPage';
+import PartnerRegisterPage from './pages/partner/PartnerRegisterPage';
+import AddPropertyWizard from './pages/partner/AddPropertyWizard';
+import PartnerLandingPage from './pages/partner/PartnerLandingPage';
+import Dashboard from './pages/owner/Dashboard';
+import AddProperty from './pages/owner/AddProperty';
+import Earnings from './pages/owner/Earnings';
+import MyProperties from './pages/owner/MyProperties';
+import PartnerBookingsPage from './pages/PartnerBookingsPage';
+import PartnerCalendarPage from './pages/PartnerCalendarPage';
+import PartnerListingsPage from './pages/PartnerListingsPage';
+import PartnerSignupPage from './pages/PartnerSignupPage';
+
+// --- ADMIN PAGES (src/pages/admin/) ---
+import PendingQueue from './pages/admin/PendingQueue';
+import PropertyInspector from './pages/admin/PropertyInspector';
+
+const App: React.FC = () => {
+  return (
+    <Routes>
+      {/* 1. PUBLIC FLOW: Everything connected to your Landing Page */}
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/search" element={<SearchResultsPage />} />
+        <Route path="/property/:id" element={<PropertyDetailsPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/checkout/:id" element={<CheckoutPage />} />
+        <Route path="/confirmation" element={<BookingConfirmationPage />} />
+        <Route path="/trips" element={<MyTripsPage />} />
+        <Route path="/saved" element={<SavedPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/list-property" element={<PartnerStart />} />
+      </Route>
+
+      {/* 2. PARTNER/OWNER MANAGEMENT FLOW */}
+      <Route path="/owner" element={<OwnerLayout />}>
+        <Route index element={<Navigate to="dashboard" replace />} />
+        {/* New Partner Pages */}
+        <Route path="dashboard" element={<PartnerDashboard />} />
+        <Route path="inventory" element={<PartnerInventoryHub />} />
+        <Route path="earnings" element={<PartnerEarningsPage />} />
+        <Route path="wizard" element={<AddPropertyWizard />} />
+        <Route path="bookings" element={<PartnerBookingsPage />} />
+        <Route path="calendar" element={<PartnerCalendarPage />} />
+        <Route path="listings" element={<PartnerListingsPage />} />
+        {/* Legacy Owner Pages */}
+        <Route path="old-dashboard" element={<Dashboard />} />
+        <Route path="add-simple" element={<AddProperty />} />
+        <Route path="my-listings" element={<MyProperties />} />
+        <Route path="old-earnings" element={<Earnings />} />
+      </Route>
+
+      {/* 3. PARTNER AUTHENTICATION */}
+      <Route path="/partner-login" element={<PartnerLoginPage />} />
+      <Route path="/partner-register" element={<PartnerRegisterPage />} />
+      <Route path="/partner-signup" element={<PartnerSignupPage />} />
+      <Route path="/partner-welcome" element={<PartnerLandingPage />} />
+
+      {/* 4. ADMIN VERIFICATION FLOW */}
+      <Route path="/admin">
+        <Route path="pending" element={<PendingQueue />} />
+        <Route path="inspect/:id" element={<PropertyInspector />} />
+      </Route>
+
+      {/* 5. CATCH-ALLS */}
+      <Route path="/404" element={<NotFoundPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+};
+
+export default App;
