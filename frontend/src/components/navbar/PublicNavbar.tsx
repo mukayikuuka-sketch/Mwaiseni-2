@@ -50,7 +50,7 @@ const PublicNavbar: React.FC = () => {
                     </div>
 
                     {/* NEW: Home Link in Circle Dropdown */}
-                    <Link to="/" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-gray-700 font-medium" onClick={() => setIsOpen(false)}>
+                    <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-gray-700 font-medium" onClick={() => setIsOpen(false)}>
                       <Home size={18} className="text-blue-600" /> Explore Home
                     </Link>
                     
@@ -84,6 +84,8 @@ const PublicNavbar: React.FC = () => {
 };
 
 export default PublicNavbar;
+
+
 
 
 
