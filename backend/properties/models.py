@@ -34,7 +34,8 @@ class Property(models.Model):
     ]
     
     # Basic Info
-    host = models.ForeignKey(User, on_delete=models.CASCADE, related_name='properties')
+    # FIXED: Changed from 'properties' to 'owned_properties' to avoid clash
+    host = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_properties')
     title = models.CharField(max_length=200)
     description = models.TextField()
     property_type = models.CharField(max_length=20, choices=PROPERTY_TYPES)

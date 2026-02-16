@@ -18,7 +18,7 @@ const GuestNavbar: React.FC = () => {
     location.pathname === path ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-700 hover:text-blue-600";
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm border-b">
+    <header className="sticky top-0 z-50 navbar-glass">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -99,4 +99,5 @@ const GuestNavbar: React.FC = () => {
 };
 
 export default GuestNavbar;
+
 

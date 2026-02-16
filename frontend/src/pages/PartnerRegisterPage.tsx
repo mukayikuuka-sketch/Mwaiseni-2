@@ -151,7 +151,7 @@ const PartnerRegisterPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-5 px-4 border border-transparent rounded-2xl shadow-xl text-sm font-black text-white bg-blue-600 hover:bg-blue-700 transition active:scale-95 disabled:opacity-70 group"
+              className="w-full flex items-center justify-center gap-2 py-5 px-4 border border-transparent rounded-2xl shadow-xl text-sm font-black text-white glass-button transition active:scale-95 disabled:opacity-70 group"
             >
               {loading ? <Loader2 className="animate-spin" /> : (
                 <>
@@ -177,3 +177,4 @@ const PartnerRegisterPage: React.FC = () => {
 };
 
 export default PartnerRegisterPage;
+

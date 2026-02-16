@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   MapPin,
@@ -104,7 +104,6 @@ const PropertyDetailsPage: React.FC = () => {
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
-    // ✅ FIXED: Navigate to the correct checkout route with property ID and room ID
     navigate(`/checkout/${property.id}?roomId=${selectedRoom}`);
   };
 

@@ -98,7 +98,7 @@ const PartnerLoginPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#003580] hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#003580] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white glass-button focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#003580] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Signing in...' : 'Sign In'}
               </button>
@@ -128,3 +128,4 @@ const PartnerLoginPage: React.FC = () => {
 };
 
 export default PartnerLoginPage;
+

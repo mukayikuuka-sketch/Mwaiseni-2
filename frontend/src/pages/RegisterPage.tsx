@@ -32,7 +32,7 @@ const RegisterPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl">
+      <div className="max-w-md w-full space-y-8 glass-card p-10">
         <h2 className="text-center text-3xl font-extrabold text-gray-900">
           {isPartnerSignup ? 'List your Property on Mwaiseni' : 'Create your Guest Account'}
         </h2>
@@ -62,6 +62,8 @@ const RegisterPage: React.FC = () => {
 };
 
 export default RegisterPage;
+
+
 
 
 

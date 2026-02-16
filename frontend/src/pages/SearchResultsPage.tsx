@@ -465,3 +465,4 @@ const SearchResultsPage: React.FC = () => {
 };
 
 export default SearchResultsPage;
+

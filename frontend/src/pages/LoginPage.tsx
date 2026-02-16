@@ -140,7 +140,7 @@ const LoginPage: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 py-5 px-4 rounded-[1.5rem] text-sm font-black text-white bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-200 transition-all active:scale-[0.98] disabled:opacity-70 group"
+            className="w-full flex items-center justify-center gap-3 py-5 px-4 rounded-[1.5rem] text-sm font-black text-white glass-button shadow-xl shadow-blue-200 transition-all active:scale-[0.98] disabled:opacity-70 group"
           >
             {loading ? <Loader2 className="animate-spin" /> : (
               <>
@@ -184,3 +184,6 @@ const LoginPage: React.FC = () => {
 };
 
 export default LoginPage;
+
+
+

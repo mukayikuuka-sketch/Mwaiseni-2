@@ -17,7 +17,7 @@ export default function PartnerNavbar() {
   }
 
   return (
-    <nav className="border-b bg-white px-8 py-4 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+    <nav className="border-b navbar-glass px-8 py-4 flex justify-between items-center sticky top-0 z-50">
       {/* LEFT: LOGO */}
       <div className="flex items-center gap-8">
         <Link to="/" className="text-2xl font-black text-blue-600 tracking-tighter">
@@ -67,3 +67,4 @@ export default function PartnerNavbar() {
     </nav>
   )
 }
+

@@ -14,8 +14,13 @@ const PublicNavbar: React.FC = () => {
   return (
     <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+        {/* USE THE CORRECT FILENAME: logo.jpeg */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="bg-blue-600 p-2 rounded-lg text-white font-black text-xl">Z</div>
+        <img 
+  src="/images/logo.jpeg"   // This will now work from public folder
+  alt="Mwaiseni" 
+  className="h-12 w-auto" 
+/>
           <span className="text-2xl font-black text-blue-900 tracking-tighter">Mwaiseni</span>
         </Link>
 
@@ -49,7 +54,6 @@ const PublicNavbar: React.FC = () => {
                       <p className="text-xs text-gray-400">{user.email}</p>
                     </div>
 
-                    {/* NEW: Home Link in Circle Dropdown */}
                     <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-gray-700 font-medium" onClick={() => setIsOpen(false)}>
                       <Home size={18} className="text-blue-600" /> Explore Home
                     </Link>
@@ -84,8 +88,3 @@ const PublicNavbar: React.FC = () => {
 };
 
 export default PublicNavbar;
-
-
-
-
-
