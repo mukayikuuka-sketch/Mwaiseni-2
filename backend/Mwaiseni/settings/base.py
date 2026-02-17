@@ -111,3 +111,10 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME', '')
+
+# React frontend build files
+FRONTEND_DIR = BASE_DIR.parent / 'frontend'
+STATICFILES_DIRS = STATICFILES_DIRS + [FRONTEND_DIR / 'dist']
+
+# Template directories for React
+TEMPLATES[0]['DIRS'] = [FRONTEND_DIR / 'dist']

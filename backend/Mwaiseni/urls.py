@@ -1,4 +1,5 @@
 from django.contrib import admin
+from . import views
 from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 from django.conf import settings
@@ -6,6 +7,7 @@ from django.conf.urls.static import static
 import os
 
 urlpatterns = [
+    path('', views.index, name='index'),
     # Admin - MUST come first
     path('admin/', admin.site.urls),
     
@@ -25,3 +27,4 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static('/static/dist/', document_root=os.path.join(settings.BASE_DIR, 'static', 'dist'))
+

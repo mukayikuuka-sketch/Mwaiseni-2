@@ -1,16 +1,11 @@
-﻿# Railway configuration for monorepo
-[build]
+﻿[build]
 builder = "NIXPACKS"
 
-# Backend service configuration
-[backend]
-root = "backend"
-buildCommand = "pip install -r requirements.txt && python manage.py collectstatic --noinput"
-startCommand = "gunicorn Mwaiseni.wsgi:application --bind 0.0.0.0: --workers 4"
-healthcheckPath = "/health/"
+# Build both frontend and backend
+buildCommand = """
+cd frontend && npm install && npm run build &&
+cd ../backend && pip install -r requirements.txt
+"""
 
-# Frontend service configuration
-[frontend]
-root = "frontend"
-buildCommand = "npm install && npm run build"
-startCommand = "npx serve -s dist -l "
+# Start Django and serve React build files
+startCommand = "cd backend && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn Mwaiseni.wsgi --bind 0.0.0.0:"
