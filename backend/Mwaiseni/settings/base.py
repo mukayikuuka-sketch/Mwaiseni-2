@@ -1,6 +1,7 @@
-import os
+﻿import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 # Load environment variables from .env file
 load_dotenv()
@@ -59,12 +60,13 @@ TEMPLATES = [
     },
 ]
 
-# Database - Load from .env
+# Database - Using dj-database-url for Railway PostgreSQL
 DATABASES = {
-    "default": {
-        "ENGINE": os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
-        "NAME": os.getenv('DB_NAME', str(BASE_DIR / "db.sqlite3")),
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 # Static files
@@ -75,7 +77,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Auth and API settings
 AUTH_USER_MODEL = "users.User"
-CORS_ALLOW_ALL_ORIGINS = False  # Change to False when using CORS_ALLOWED_ORIGINS
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173').split(',')
 CORS_ALLOW_CREDENTIALS = True
 
@@ -118,3 +120,11 @@ STATICFILES_DIRS = STATICFILES_DIRS + [FRONTEND_DIR / 'dist']
 
 # Template directories for React
 TEMPLATES[0]['DIRS'] = [FRONTEND_DIR / 'dist']
+
+# Security Headers for Production
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
