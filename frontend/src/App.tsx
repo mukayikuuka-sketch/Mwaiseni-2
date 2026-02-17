@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 // LAYOUTS
@@ -33,8 +33,6 @@ import PartnerBookingsPage from './pages/PartnerBookingsPage';
 import PartnerCalendarPage from './pages/PartnerCalendarPage';
 import PartnerListingsPage from './pages/PartnerListingsPage';
 import PartnerStart from './pages/PartnerStart';
-
-import FloatingActionButton from "./components/ui/FloatingActionButton";
 
 // Admin
 import PendingQueue from './pages/admin/PendingQueue';
@@ -100,9 +98,9 @@ const App: React.FC = () => {
           } 
         />
       </Routes>
-      <FloatingActionButton />
     </>
   );
 };
 
 export default App;
+
