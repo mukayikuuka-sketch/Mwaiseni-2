@@ -3,10 +3,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 
-# Load environment variables from .env file
 load_dotenv()
 
-# BASE_DIR (Three .parent calls because we are in Mwaiseni/settings/base.py)
+# BASE_DIR is 3 levels up: settings/ -> Mwaiseni/ -> backend/
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-Mwaiseni-key')
@@ -47,7 +46,7 @@ ROOT_URLCONF = "Mwaiseni.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "static" / "dist"],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -60,34 +59,36 @@ TEMPLATES = [
     },
 ]
 
-# Database - Using dj-database-url for Railway PostgreSQL
-DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+# Database configuration
+if os.getenv('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
-# Static files
+# Static and Media Files
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "static" / "dist"]
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-# Auth and API settings
-AUTH_USER_MODEL = "users.User"
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173').split(',')
-CORS_ALLOW_CREDENTIALS = True
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# Django REST Framework settings
+# Frontend Integration
+FRONTEND_DIR = BASE_DIR.parent / 'frontend'
+# Line 83: This is now clean and terminated correctly
+STATICFILES_DIRS = [FRONTEND_DIR / 'dist'] if (FRONTEND_DIR / 'dist').exists() else []
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+TEMPLATES[0]['DIRS'] = [FRONTEND_DIR / 'dist']
+
+AUTH_USER_MODEL = "users.User"
+CORS_ALLOW_ALL_ORIGINS = True
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -96,35 +97,4 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20
 }
-
-# Email settings from .env
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', '1025'))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'False') == 'True'
-
-# Stripe settings from .env
-STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
-STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
-
-# AWS settings from .env
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
-AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME', '')
-
-# React frontend build files
-FRONTEND_DIR = BASE_DIR.parent / 'frontend'
-STATICFILES_DIRS = STATICFILES_DIRS + [FRONTEND_DIR / 'dist']
-
-# Template directories for React
-TEMPLATES[0]['DIRS'] = [FRONTEND_DIR / 'dist']
-
-# Security Headers for Production
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
