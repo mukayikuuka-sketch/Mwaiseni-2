@@ -1,131 +1,193 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import {
+  Mail,
+  Lock,
+  Building2,
+  Loader2,
+  ArrowRight,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 
 const PartnerLoginPage: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState(""); // future backend auth
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
-    try {
-      // Simple validation
-      if (!email || !password) {
-        throw new Error('Please fill in all fields');
-      }
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      setLoading(false);
+      return;
+    }
 
-      // Call login with just email and role (password is ignored in your current AuthContext)
-      login(email, 'partner');
-      
-      // Redirect to partner dashboard on success
-      navigate('/owner/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Login failed. Please check your credentials.');
+    try {
+      login(email, "partner");
+      navigate("/owner/dashboard");
+    } catch {
+      setError("Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12">
+      <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-slate-100">
+        {/* Header */}
         <div className="text-center">
-          <h1 className="text-4xl font-black text-[#003580]">Mwaiseni</h1>
-          <h2 className="mt-6 text-2xl font-bold text-gray-900">Partner Login</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Don't have a partner account?{' '}
-            <Link to="/partner-register" className="font-medium text-[#003580] hover:text-blue-700">
-              Register here
-            </Link>
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-50 rounded-3xl mb-6 text-blue-600 ring-8 ring-blue-50/50">
+            <Building2 size={40} strokeWidth={2.5} />
+          </div>
+
+          <h2 className="text-4xl font-black text-slate-900 tracking-tighter">
+            Partner Login
+          </h2>
+
+          <p className="mt-3 text-slate-500 font-bold">
+            Manage your property and bookings
           </p>
         </div>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-xl rounded-2xl sm:px-10 border border-slate-100">
+        {/* Form */}
+        <form className="mt-10 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="bg-red-50 border border-red-100 p-4 rounded-2xl text-red-600 text-sm font-bold flex items-center gap-3">
+              <AlertCircle size={20} />
+              <span>{error}</span>
             </div>
           )}
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+          <div className="space-y-5">
+            {/* Email */}
+            <div className="space-y-2 text-left">
+              <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-5">
+                Partner Email
               </label>
-              <div className="mt-1">
+
+              <div className="relative group">
+                <Mail
+                  className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors"
+                  size={22}
+                />
                 <input
-                  id="email"
-                  name="email"
                   type="email"
-                  autoComplete="email"
                   required
+                  placeholder="owner@example.com"
+                  className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-transparent rounded-[1.5rem] focus:ring-0 focus:border-blue-500 focus:bg-white font-bold transition-all text-slate-900 outline-none"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#003580] focus:border-[#003580]"
                 />
               </div>
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            {/* Password */}
+            <div className="space-y-2 text-left">
+              <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-5">
                 Password
               </label>
-              <div className="mt-1">
+
+              <div className="relative group">
+                <Lock
+                  className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors"
+                  size={22}
+                />
                 <input
-                  id="password"
-                  name="password"
                   type="password"
-                  autoComplete="current-password"
                   required
+                  placeholder="••••••••••••"
+                  className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-transparent rounded-[1.5rem] focus:ring-0 focus:border-blue-500 focus:bg-white font-bold transition-all text-slate-900 outline-none"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#003580] focus:border-[#003580]"
                 />
               </div>
             </div>
-
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white glass-button focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#003580] disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Signing in...' : 'Sign In'}
-              </button>
-            </div>
-          </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Looking for stays?</span>
-              </div>
-            </div>
-
-            <div className="mt-6 text-center">
-              <Link to="/login" className="text-sm font-medium text-[#003580] hover:text-blue-700">
-                Guest login instead
-              </Link>
-            </div>
           </div>
-        </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between px-2">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
+              <CheckCircle2 size={14} className="text-blue-500" />
+              Secure Partner Portal
+            </div>
+
+            <Link
+              to="/forgot-password"
+              className="text-xs font-black text-blue-600 hover:text-blue-700"
+            >
+              Forgot?
+            </Link>
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 py-5 px-4 rounded-[1.5rem] text-sm font-black text-white glass-button shadow-xl shadow-blue-200 transition-all active:scale-[0.98] disabled:opacity-70 group"
+          >
+            {loading ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <>
+                Sign In
+                <ArrowRight
+                  size={20}
+                  className="group-hover:translate-x-1 transition-transform"
+                />
+              </>
+            )}
+          </button>
+
+          {/* Demo */}
+          <div className="pt-4 border-t border-slate-100">
+            <p className="text-[10px] font-black uppercase text-slate-400 text-center mb-4 tracking-widest">
+              Quick Demo Access
+            </p>
+
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("partner@Mwaiseni.com");
+                setPassword("password");
+              }}
+              className="w-full py-3 px-4 bg-slate-100 hover:bg-slate-200 rounded-xl text-[10px] font-black text-slate-600 transition-colors"
+            >
+              PARTNER DEMO
+            </button>
+          </div>
+
+          {/* Switch */}
+          <div className="text-center text-sm font-bold text-slate-500 mt-8">
+            New partner?{" "}
+            <Link
+              to="/partner-register"
+              className="text-blue-600 hover:underline hover:text-blue-700"
+            >
+              Create Partner Account
+            </Link>
+          </div>
+
+          {/* Guest link */}
+          <div className="text-center text-xs font-bold text-slate-400">
+            Want to book stays?{" "}
+            <Link to="/login" className="text-blue-600 hover:underline">
+              Guest login
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   );
 };
 
 export default PartnerLoginPage;
-
